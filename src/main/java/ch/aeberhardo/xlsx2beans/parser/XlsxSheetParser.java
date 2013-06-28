@@ -40,9 +40,17 @@ public class XlsxSheetParser {
 		Map<Integer, String> headerMap = new HashMap<>();
 
 		for (Cell cell : row) {
-			int colNum = cell.getColumnIndex();
-			String value = cell.getStringCellValue();
-			headerMap.put(colNum, value);
+
+			try {
+
+				int colNum = cell.getColumnIndex();
+				String value = cell.getStringCellValue();
+				headerMap.put(colNum, value);
+
+			} catch (Exception e) {
+				throw new XlsxParserException("Error while parsing header (row=" + row.getRowNum() + ", column=" + cell.getColumnIndex() + "): "
+						+ e.getMessage(), e);
+			}
 		}
 
 		return headerMap;
