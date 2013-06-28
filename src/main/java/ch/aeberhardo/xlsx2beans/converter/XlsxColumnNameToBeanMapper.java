@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx.beanconverter;
+package ch.aeberhardo.xlsx2beans.converter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx;
+package ch.aeberhardo.xlsx2beans;
 
 import static org.junit.Assert.*;
 
@@ -9,7 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.aeberhardo.xlsx.beanconverter.TestBean1;
+import ch.aeberhardo.xlsx2beans.XlsxToBeanConverter;
+import ch.aeberhardo.xlsx2beans.converter.TestBean1;
 
 public class XlsxToBeanConverterTest {
 

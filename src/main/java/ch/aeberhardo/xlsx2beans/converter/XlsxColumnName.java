@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx.beanconverter;
+package ch.aeberhardo.xlsx2beans.converter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

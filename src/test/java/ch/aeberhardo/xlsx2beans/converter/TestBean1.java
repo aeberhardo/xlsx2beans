@@ -1,6 +1,8 @@
-package ch.aeberhardo.xlsx.beanconverter;
+package ch.aeberhardo.xlsx2beans.converter;
 
 import java.util.Date;
+
+import ch.aeberhardo.xlsx2beans.converter.XlsxColumnName;
 
 public class TestBean1 {
 

@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx.beanconverter;
+package ch.aeberhardo.xlsx2beans.converter;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.aeberhardo.xlsx2beans.converter.XlsxToBeanConverterHandler;
 
 public class XlsxToBeanConverterHandlerTest {
 

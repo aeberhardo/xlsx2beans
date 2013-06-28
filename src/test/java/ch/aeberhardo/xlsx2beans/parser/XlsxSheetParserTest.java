@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx.parser;
+package ch.aeberhardo.xlsx2beans.parser;
 
 import static org.mockito.Mockito.*;
 
@@ -13,8 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.aeberhardo.xlsx.parser.XlsxSheetEventHandler;
-import ch.aeberhardo.xlsx.parser.XlsxSheetParser;
+import ch.aeberhardo.xlsx2beans.parser.XlsxSheetEventHandler;
+import ch.aeberhardo.xlsx2beans.parser.XlsxSheetParser;
 
 public class XlsxSheetParserTest {
 

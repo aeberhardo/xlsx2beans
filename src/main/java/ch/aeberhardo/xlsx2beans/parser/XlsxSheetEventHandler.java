@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx.parser;
+package ch.aeberhardo.xlsx2beans.parser;
 
 import java.util.Date;
 

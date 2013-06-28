@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx;
+package ch.aeberhardo.xlsx2beans;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,9 +9,9 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import ch.aeberhardo.xlsx.beanconverter.XlsxBeanConverterException;
-import ch.aeberhardo.xlsx.beanconverter.XlsxToBeanConverterHandler;
-import ch.aeberhardo.xlsx.parser.XlsxSheetParser;
+import ch.aeberhardo.xlsx2beans.converter.XlsxBeanConverterException;
+import ch.aeberhardo.xlsx2beans.converter.XlsxToBeanConverterHandler;
+import ch.aeberhardo.xlsx2beans.parser.XlsxSheetParser;
 
 public class XlsxToBeanConverter {
 

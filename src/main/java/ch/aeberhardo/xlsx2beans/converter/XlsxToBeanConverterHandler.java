@@ -1,11 +1,11 @@
-package ch.aeberhardo.xlsx.beanconverter;
+package ch.aeberhardo.xlsx2beans.converter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import ch.aeberhardo.xlsx.parser.XlsxSheetEventHandler;
+import ch.aeberhardo.xlsx2beans.parser.XlsxSheetEventHandler;
 
 public class XlsxToBeanConverterHandler<T> implements XlsxSheetEventHandler {
 

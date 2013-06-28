@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx.beanconverter;
+package ch.aeberhardo.xlsx2beans.converter;
 
 public class XlsxBeanConverterException extends RuntimeException {
 
