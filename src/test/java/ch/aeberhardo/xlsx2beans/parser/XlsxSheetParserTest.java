@@ -57,8 +57,6 @@ public class XlsxSheetParserTest {
 
 	@Test
 	public void test_invalidHeader() {
-		
-		Exception expectedException = null;
 
 		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-invalid_header.xlsx"))) {
 
@@ -69,19 +67,16 @@ public class XlsxSheetParserTest {
 
 			XlsxSheetEventHandler handlerMock = mock(XlsxSheetEventHandler.class);
 
-			try {
-				parser.parse(sheet, handlerMock);
-			} catch (Exception e) {
-				expectedException = e;
-			}
+			parser.parse(sheet, handlerMock);
+			fail("Expected exception was not thrown!");
+
+		} catch (XlsxParserException e) {
+			assertTrue(e.getMessage().startsWith("Error while parsing header (row=0, column=2):"));
 
 		} catch (InvalidFormatException | IOException e) {
 			throw new RuntimeException(e);
 		}
 
-		assertTrue(expectedException instanceof XlsxParserException);
-		assertTrue(expectedException.getMessage().startsWith("Error while parsing header (row=0, column=2):"));
-		
 	}
 
 }
