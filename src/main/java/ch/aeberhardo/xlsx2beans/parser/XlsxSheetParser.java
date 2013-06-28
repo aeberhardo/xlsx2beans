@@ -48,7 +48,7 @@ public class XlsxSheetParser {
 				headerMap.put(colNum, value);
 
 			} catch (Exception e) {
-				throw new XlsxParserException("Error while parsing header (row=" + row.getRowNum() + ", column=" + cell.getColumnIndex() + "): "
+				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): "
 						+ e.getMessage(), e);
 			}
 		}

@@ -33,19 +33,31 @@ public class XlsxToBeanConverterHandler<T> implements XlsxSheetEventHandler {
 	@Override
 	public void stringCell(int rowNum, int colIndex, String colName, String cellValue) {
 		T currentBean = getCurrentBean();
-		m_mapper.setString(currentBean, colName, cellValue);
+		try {
+			m_mapper.setString(currentBean, colName, cellValue);
+		} catch (XlsxColumnNameToBeanMapperException e) {
+			throw beanConverterException(rowNum, colIndex, colName, cellValue, e);
+		}
 	}
 
 	@Override
 	public void doubleCell(int rowNum, int colIndex, String colName, Double cellValue) {
 		T currentBean = getCurrentBean();
-		m_mapper.setNumber(currentBean, colName, cellValue);
+		try {
+			m_mapper.setNumber(currentBean, colName, cellValue);
+		} catch (XlsxColumnNameToBeanMapperException e) {
+			throw beanConverterException(rowNum, colIndex, colName, cellValue.toString(), e);
+		}
 	}
 
 	@Override
 	public void dateCell(int rowNum, int colIndex, String colName, Date cellValue) {
 		T currentBean = getCurrentBean();
-		m_mapper.setDate(currentBean, colName, cellValue);
+		try {
+			m_mapper.setDate(currentBean, colName, cellValue);
+		} catch (XlsxColumnNameToBeanMapperException e) {
+			throw beanConverterException(rowNum, colIndex, colName, cellValue.toString(), e);
+		}
 	}
 
 	private T createNewBean() {
@@ -64,4 +76,10 @@ public class XlsxToBeanConverterHandler<T> implements XlsxSheetEventHandler {
 		return Collections.unmodifiableList(m_beans);
 	}
 
+	private XlsxBeanConverterException beanConverterException(int rowNum, int colIndex, String colName, String cellValueAsString,
+			XlsxColumnNameToBeanMapperException cause) {
+		String message = "Error while mapping cell (rowNum=" + rowNum + ", colIndex=" + colIndex + ", colName=" + colName + ", cellValue=" + cellValueAsString
+				+ "): " + cause.getMessage();
+		return new XlsxBeanConverterException(message, cause);
+	}
 }

@@ -22,6 +22,10 @@ public class XlsxColumnNameToBeanMapper {
 
 	public void setNumber(Object targetObject, String mappedColumnName, Number value) {
 
+		if (value == null) {
+			return;
+		}
+
 		List<Method> methods = findMethodsByMappedColumnName(targetObject, mappedColumnName);
 
 		for (Method method : methods) {
@@ -41,6 +45,9 @@ public class XlsxColumnNameToBeanMapper {
 				targetValue = value.byteValue();
 			} else if (parameterType == Long.class) {
 				targetValue = value.longValue();
+			} else {
+				throw new XlsxColumnNameToBeanMapperException("argument type mismatch! Mapping target expected " + parameterType.getSimpleName()
+						+ " but got Number.");
 			}
 
 			invokeSetter(targetObject, method, targetValue);
@@ -48,6 +55,10 @@ public class XlsxColumnNameToBeanMapper {
 	}
 
 	private void setObject(Object targetObject, String mappedColumnName, Object value) {
+
+		if (value == null) {
+			return;
+		}
 
 		List<Method> methods = findMethodsByMappedColumnName(targetObject, mappedColumnName);
 
@@ -63,13 +74,13 @@ public class XlsxColumnNameToBeanMapper {
 		try {
 			method.invoke(targetObject, value);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new XlsxBeanConverterException(e);
+			throw new XlsxColumnNameToBeanMapperException(e.getMessage(), e);
 		}
 	}
 
 	private void validateSetterName(Method method) {
 		if (!method.getName().startsWith("set")) {
-			throw new IllegalArgumentException("Name of setter method must start with 'set' but was '" + method.getName() + "'.");
+			throw new XlsxColumnNameToBeanMapperException("Name of setter method must start with 'set' but was '" + method.getName() + "'.");
 		}
 	}
 

@@ -71,7 +71,7 @@ public class XlsxSheetParserTest {
 			fail("Expected exception was not thrown!");
 
 		} catch (XlsxParserException e) {
-			assertTrue(e.getMessage().startsWith("Error while parsing header (row=0, column=2):"));
+			assertTrue(e.getMessage().startsWith("Error while parsing header (rowNum=0, colIndex=2):"));
 
 		} catch (InvalidFormatException | IOException e) {
 			throw new RuntimeException(e);
