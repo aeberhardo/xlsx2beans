@@ -1,4 +1,4 @@
 xlsx2bean
 =========
 
-Convert simple Exxlsx*.xlsx sheets to Java beans.
+Convert simple XLSX spreadsheets to Java beans.
