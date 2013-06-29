@@ -44,8 +44,11 @@ public class XlsxSheetParser {
 			try {
 
 				int colNum = cell.getColumnIndex();
-				String value = cell.getStringCellValue();
-				headerMap.put(colNum, value);
+				String headerCellName = cell.getStringCellValue();
+
+				validateHeaderCellNameUnique(headerMap, headerCellName);
+
+				headerMap.put(colNum, headerCellName);
 
 			} catch (Exception e) {
 				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): "
@@ -55,6 +58,12 @@ public class XlsxSheetParser {
 
 		return headerMap;
 
+	}
+
+	private void validateHeaderCellNameUnique(Map<Integer, String> headerMap, String name) {
+		if (headerMap.containsValue(name)) {
+			throw new IllegalStateException("The column header with name '" + name + "' is not unique!");
+		}
 	}
 
 	private void parseCells(Row row, Map<Integer, String> headerMap, XlsxSheetEventHandler handler) {

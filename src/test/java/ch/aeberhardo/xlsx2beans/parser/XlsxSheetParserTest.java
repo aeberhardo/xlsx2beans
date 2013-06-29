@@ -79,4 +79,28 @@ public class XlsxSheetParserTest {
 
 	}
 
+	@Test
+	public void test_nonUniqueHeader() {
+		
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-non_unique_header.xlsx"))) {
+			
+			XSSFWorkbook wb = new XSSFWorkbook(pkg);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			
+			XlsxSheetParser parser = new XlsxSheetParser();
+			
+			XlsxSheetEventHandler handlerMock = mock(XlsxSheetEventHandler.class);
+			
+			parser.parse(sheet, handlerMock);
+			fail("Expected exception was not thrown!");
+			
+		} catch (XlsxParserException e) {
+			assertEquals(e.getMessage(), "Error while parsing header (rowNum=0, colIndex=3): The column header with name 'MyString2' is not unique!");
+			
+		} catch (InvalidFormatException | IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
 }
