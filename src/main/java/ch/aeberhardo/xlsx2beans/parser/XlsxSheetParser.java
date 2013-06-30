@@ -69,11 +69,16 @@ public class XlsxSheetParser {
 	private void parseCells(Row row, Map<Integer, String> headerMap, XlsxSheetEventHandler handler) {
 
 		for (Cell cell : row) {
-
-			int rowNum = row.getRowNum();
-			int cellType = cell.getCellType();
+			
 			int colIndex = cell.getColumnIndex();
 			String colName = headerMap.get(colIndex);
+
+			if (colName == null || colName.isEmpty()) {
+				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
+			}
+			
+			int rowNum = row.getRowNum();
+			int cellType = cell.getCellType();
 
 			if (cellType == Cell.CELL_TYPE_STRING) {
 				handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());

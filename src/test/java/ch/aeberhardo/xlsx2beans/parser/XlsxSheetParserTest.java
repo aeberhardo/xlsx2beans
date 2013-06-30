@@ -95,7 +95,31 @@ public class XlsxSheetParserTest {
 			fail("Expected exception was not thrown!");
 			
 		} catch (XlsxParserException e) {
-			assertEquals(e.getMessage(), "Error while parsing header (rowNum=0, colIndex=3): The column header with name 'MyString2' is not unique!");
+			assertEquals("Error while parsing header (rowNum=0, colIndex=3): The column header with name 'MyString2' is not unique!", e.getMessage());
+			
+		} catch (InvalidFormatException | IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	@Test
+	public void test_undefinedHeader() {
+		
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-header_not_definied.xlsx"))) {
+			
+			XSSFWorkbook wb = new XSSFWorkbook(pkg);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			
+			XlsxSheetParser parser = new XlsxSheetParser();
+			
+			XlsxSheetEventHandler handlerMock = mock(XlsxSheetEventHandler.class);
+			
+			parser.parse(sheet, handlerMock);
+			fail("Expected exception was not thrown!");
+			
+		} catch (XlsxParserException e) {
+			assertEquals("Error while parsing cell (rowNum=1, colIndex=5): No header name defined!", e.getMessage());
 			
 		} catch (InvalidFormatException | IOException e) {
 			throw new RuntimeException(e);

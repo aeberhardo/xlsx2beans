@@ -101,7 +101,7 @@ public class XlsxToBeanConverterHandlerTest {
 			fail("Expected exception was not thrown!");
 			
 		} catch (XlsxBeanConverterException e) {
-			assertEquals(e.getMessage(), "Error while mapping cell (rowNum=1, colIndex=0, colName=MyInteger, cellValue=1.0): argument type mismatch! Mapping target expected String but got Number.");
+			assertEquals("Error while mapping cell (rowNum=1, colIndex=0, colName=MyInteger, cellValue=1.0): argument type mismatch! Mapping target expected String but got Number.", e.getMessage());
 		}
 		
 	}
