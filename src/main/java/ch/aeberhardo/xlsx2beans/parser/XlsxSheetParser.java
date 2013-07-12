@@ -40,23 +40,45 @@ public class XlsxSheetParser {
 		Map<Integer, String> headerMap = new HashMap<>();
 
 		for (Cell cell : row) {
-			int colNum = cell.getColumnIndex();
-			String value = cell.getStringCellValue();
-			headerMap.put(colNum, value);
+
+			try {
+
+				int colNum = cell.getColumnIndex();
+				String headerCellName = cell.getStringCellValue();
+
+				validateHeaderCellNameUnique(headerMap, headerCellName);
+
+				headerMap.put(colNum, headerCellName);
+
+			} catch (Exception e) {
+				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): "
+						+ e.getMessage(), e);
+			}
 		}
 
 		return headerMap;
 
 	}
 
+	private void validateHeaderCellNameUnique(Map<Integer, String> headerMap, String name) {
+		if (headerMap.containsValue(name)) {
+			throw new IllegalStateException("The column header with name '" + name + "' is not unique!");
+		}
+	}
+
 	private void parseCells(Row row, Map<Integer, String> headerMap, XlsxSheetEventHandler handler) {
 
 		for (Cell cell : row) {
-
-			int rowNum = row.getRowNum();
-			int cellType = cell.getCellType();
+			
 			int colIndex = cell.getColumnIndex();
 			String colName = headerMap.get(colIndex);
+
+			if (colName == null || colName.isEmpty()) {
+				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
+			}
+			
+			int rowNum = row.getRowNum();
+			int cellType = cell.getCellType();
 
 			if (cellType == Cell.CELL_TYPE_STRING) {
 				handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());

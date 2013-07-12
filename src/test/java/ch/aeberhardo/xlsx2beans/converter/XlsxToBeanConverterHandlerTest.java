@@ -19,7 +19,7 @@ public class XlsxToBeanConverterHandlerTest {
 	@Test
 	public void test_createRows() {
 
-		XlsxToBeanConverterHandler<TestBean1> converterHandler = new XlsxToBeanConverterHandler<TestBean1>(TestBean1.class);
+		XlsxToBeanConverterHandler<TestBean1> converterHandler = new XlsxToBeanConverterHandler<>(TestBean1.class);
 
 		converterHandler.startRow(1);
 		converterHandler.endRow(1);
@@ -34,7 +34,7 @@ public class XlsxToBeanConverterHandlerTest {
 	@Test
 	public void test_createBeans() throws ParseException {
 
-		XlsxToBeanConverterHandler<TestBean1> converterHandler = new XlsxToBeanConverterHandler<TestBean1>(TestBean1.class);
+		XlsxToBeanConverterHandler<TestBean1> converterHandler = new XlsxToBeanConverterHandler<>(TestBean1.class);
 
 		converterHandler.startRow(1);
 		converterHandler.stringCell(1, 0, "MyString1", "Test string 1");
@@ -65,6 +65,45 @@ public class XlsxToBeanConverterHandlerTest {
 		assertEquals(Integer.valueOf(567), converterHandler.getBeans().get(1).getMyInteger());
 		assertEquals(Double.valueOf(10.11d), converterHandler.getBeans().get(1).getMyDouble());
 		assertEquals(new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse("20.06.2011 23:50:33"), converterHandler.getBeans().get(1).getMyDate());
+	}
+
+	@Test
+	public void test_invalidStringToNumberMapping() {
+
+		XlsxToBeanConverterHandler<InvalidStringToNumberMappingBean> converterHandler = new XlsxToBeanConverterHandler<>(InvalidStringToNumberMappingBean.class);
+
+		converterHandler.startRow(1);
+
+		try {
+
+			converterHandler.stringCell(1, 0, "MyString1", "Test string 1");
+
+			fail("Expected exception was not thrown!");
+
+		} catch (XlsxBeanConverterException e) {
+			assertTrue(e.getMessage().startsWith(
+					"Error while mapping cell (rowNum=1, colIndex=0, colName=MyString1, cellValue=Test string 1): argument type mismatch"));
+		}
+
+	}
+
+	@Test
+	public void test_invalidNumberToStringMapping() {
+		
+		XlsxToBeanConverterHandler<InvalidNumberToStringMappingBean> converterHandler = new XlsxToBeanConverterHandler<>(InvalidNumberToStringMappingBean.class);
+		
+		converterHandler.startRow(1);
+		
+		try {
+			
+			converterHandler.doubleCell(1, 0, "MyInteger", 1d);
+			
+			fail("Expected exception was not thrown!");
+			
+		} catch (XlsxBeanConverterException e) {
+			assertEquals("Error while mapping cell (rowNum=1, colIndex=0, colName=MyInteger, cellValue=1.0): argument type mismatch! Mapping target expected String but got Number.", e.getMessage());
+		}
+		
 	}
 
 }
