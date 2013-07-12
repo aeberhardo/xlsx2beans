@@ -23,7 +23,7 @@ public class XlsxSheetParserTest {
 	@Test
 	public void test_handlerCalls() {
 
-		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test1.xlsx"))) {
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-valid.xlsx"))) {
 
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
 			XSSFSheet sheet = wb.getSheetAt(0);

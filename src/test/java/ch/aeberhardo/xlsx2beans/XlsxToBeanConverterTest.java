@@ -23,7 +23,7 @@ public class XlsxToBeanConverterTest {
 
 		XlsxToBeanConverter converter = new XlsxToBeanConverter();
 
-		List<TestBean1> beans = converter.convert(getClass().getResourceAsStream("/test1.xlsx"), 0, TestBean1.class);
+		List<TestBean1> beans = converter.convert(getClass().getResourceAsStream("/test-valid.xlsx"), 0, TestBean1.class);
 
 		assertEquals(2, beans.size());
 
