@@ -41,13 +41,13 @@ public class XlsxSheetParserTest {
 			verify(handlerMock).stringCell(1, 1, "MyString2", "This is my string 1");
 			verify(handlerMock).doubleCell(1, 2, "MyInteger", 123.0d);
 			verify(handlerMock).doubleCell(1, 3, "MyDouble", 7.89d);
-			verify(handlerMock).dateCell(1, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse("12.01.2013 14:16:23"));
+			verify(handlerMock).dateCell(1, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("12.01.2013 14:16:23"));
 
 			verify(handlerMock).stringCell(2, 0, "MyString1", "DEF");
 			verify(handlerMock).stringCell(2, 1, "MyString2", "This is my string 2");
 			verify(handlerMock).doubleCell(2, 2, "MyInteger", 456.0d);
 			verify(handlerMock).doubleCell(2, 3, "MyDouble", 9.87d);
-			verify(handlerMock).dateCell(2, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse("20.06.2011 23:50:33"));
+			verify(handlerMock).dateCell(2, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("20.06.2011 23:50:33"));
 
 		} catch (ParseException | InvalidFormatException | IOException e) {
 			throw new RuntimeException(e);
