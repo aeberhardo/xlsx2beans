@@ -37,18 +37,4 @@ public class FormulaBean {
 	public void setMyFormulaTimestamp(Date myFormulaTimestamp) {
 		m_myFormulaTimestamp = myFormulaTimestamp;
 	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("FormulaBean [m_myInteger=");
-		builder.append(m_myInteger);
-		builder.append(", m_myFormulaInteger=");
-		builder.append(m_myFormulaInteger);
-		builder.append(", m_myFormulaTimestamp=");
-		builder.append(m_myFormulaTimestamp);
-		builder.append("]");
-		return builder.toString();
-	}
-
 }
