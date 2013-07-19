@@ -69,30 +69,50 @@ public class XlsxSheetParser {
 	private void parseCells(Row row, Map<Integer, String> headerMap, XlsxSheetEventHandler handler) {
 
 		for (Cell cell : row) {
-			
+
 			int colIndex = cell.getColumnIndex();
 			String colName = headerMap.get(colIndex);
 
 			if (colName == null || colName.isEmpty()) {
 				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
 			}
-			
+
 			int rowNum = row.getRowNum();
 			int cellType = cell.getCellType();
 
 			if (cellType == Cell.CELL_TYPE_STRING) {
-				handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());
+				handleStringCell(cell, rowNum, colIndex, colName, handler);
 
 			} else if (cellType == Cell.CELL_TYPE_NUMERIC) {
+				handleNumericCell(cell, rowNum, colIndex, colName, handler);
 
-				if (DateUtil.isCellDateFormatted(cell)) {
-					handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
-				} else {
-					handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
-				}
-
+			} else if (cellType == Cell.CELL_TYPE_FORMULA) {
+				handleFormulaCell(cell, rowNum, colIndex, colName, handler);
 			}
+		}
+	}
 
+	private void handleStringCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+		handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());
+	}
+
+	private void handleNumericCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+		if (DateUtil.isCellDateFormatted(cell)) {
+			handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
+		} else {
+			handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
+		}
+	}
+
+	private void handleFormulaCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+
+		int formulaResultType = cell.getCachedFormulaResultType();
+
+		if (formulaResultType == Cell.CELL_TYPE_STRING) {
+			handleStringCell(cell, rowNum, colIndex, colName, handler);
+
+		} else if (formulaResultType == Cell.CELL_TYPE_NUMERIC) {
+			handleNumericCell(cell, rowNum, colIndex, colName, handler);
 		}
 	}
 
