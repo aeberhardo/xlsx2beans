@@ -87,15 +87,17 @@ public class XlsxToBeanConverterTest {
 
 		XlsxToBeanConverter converter = new XlsxToBeanConverter();
 
-		List<FormulaBean> beans = converter.convert(getClass().getResourceAsStream("/test-valid-formula.xlsx"), 0, FormulaBean.class);
+		List<FormulaBean> beans = converter.convert(getClass().getResourceAsStream("/test-valid-formula-dates.xlsx"), 0, FormulaBean.class);
 
 		assertEquals(2, beans.size());
 		
 		assertEquals(Integer.valueOf(1), beans.get(0).getMyInteger());
 		assertEquals(Integer.valueOf(4), beans.get(0).getMyFormulaInteger());
+		assertEquals("26.08.2012 13:37:36", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(beans.get(0).getMyFormulaTimestamp()));
 		
 		assertEquals(Integer.valueOf(2), beans.get(1).getMyInteger());
 		assertEquals(Integer.valueOf(2), beans.get(1).getMyFormulaInteger());
+		assertEquals("15.12.2001 05:06:00", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(beans.get(1).getMyFormulaTimestamp()));
 	}
 
 }

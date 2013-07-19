@@ -1,11 +1,15 @@
 package ch.aeberhardo.xlsx2beans.converter.beans;
 
+import java.util.Date;
+
 import ch.aeberhardo.xlsx2beans.converter.XlsxColumnName;
 
 public class FormulaBean {
 
 	private Integer m_myInteger;
 	private Integer m_myFormulaInteger;
+
+	private Date m_myFormulaTimestamp;
 
 	public Integer getMyInteger() {
 		return m_myInteger;
@@ -25,6 +29,15 @@ public class FormulaBean {
 		m_myFormulaInteger = myFormulaInteger;
 	}
 
+	public Date getMyFormulaTimestamp() {
+		return m_myFormulaTimestamp;
+	}
+
+	@XlsxColumnName("MyFormulaTimestamp")
+	public void setMyFormulaTimestamp(Date myFormulaTimestamp) {
+		m_myFormulaTimestamp = myFormulaTimestamp;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -32,6 +45,8 @@ public class FormulaBean {
 		builder.append(m_myInteger);
 		builder.append(", m_myFormulaInteger=");
 		builder.append(m_myFormulaInteger);
+		builder.append(", m_myFormulaTimestamp=");
+		builder.append(m_myFormulaTimestamp);
 		builder.append("]");
 		return builder.toString();
 	}
