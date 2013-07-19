@@ -41,7 +41,7 @@ public class XlsxToBeanConverterHandlerTest {
 		converterHandler.stringCell(1, 1, "MyString2", "Test string 2");
 		converterHandler.doubleCell(1, 2, "MyInteger", 123.0d);
 		converterHandler.doubleCell(1, 3, "MyDouble", 7.89d);
-		converterHandler.dateCell(1, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse("12.01.2013 14:16:23"));
+		converterHandler.dateCell(1, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("12.01.2013 14:16:23"));
 		converterHandler.endRow(1);
 
 		assertEquals(1, converterHandler.getBeans().size());
@@ -49,14 +49,14 @@ public class XlsxToBeanConverterHandlerTest {
 		assertEquals("Test string 2", converterHandler.getBeans().get(0).getMyString2());
 		assertEquals(Integer.valueOf(123), converterHandler.getBeans().get(0).getMyInteger());
 		assertEquals(Double.valueOf(7.89d), converterHandler.getBeans().get(0).getMyDouble());
-		assertEquals(new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse("12.01.2013 14:16:23"), converterHandler.getBeans().get(0).getMyDate());
+		assertEquals(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("12.01.2013 14:16:23"), converterHandler.getBeans().get(0).getMyDate());
 
 		converterHandler.startRow(2);
 		converterHandler.stringCell(2, 0, "MyString1", "Test string 3");
 		converterHandler.stringCell(2, 1, "MyString2", "Test string 4");
 		converterHandler.doubleCell(2, 2, "MyInteger", 567.0d);
 		converterHandler.doubleCell(2, 3, "MyDouble", 10.11d);
-		converterHandler.dateCell(2, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse("20.06.2011 23:50:33"));
+		converterHandler.dateCell(2, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("20.06.2011 23:50:33"));
 		converterHandler.endRow(2);
 
 		assertEquals(2, converterHandler.getBeans().size());
@@ -64,7 +64,7 @@ public class XlsxToBeanConverterHandlerTest {
 		assertEquals("Test string 4", converterHandler.getBeans().get(1).getMyString2());
 		assertEquals(Integer.valueOf(567), converterHandler.getBeans().get(1).getMyInteger());
 		assertEquals(Double.valueOf(10.11d), converterHandler.getBeans().get(1).getMyDouble());
-		assertEquals(new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse("20.06.2011 23:50:33"), converterHandler.getBeans().get(1).getMyDate());
+		assertEquals(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("20.06.2011 23:50:33"), converterHandler.getBeans().get(1).getMyDate());
 	}
 
 	@Test
