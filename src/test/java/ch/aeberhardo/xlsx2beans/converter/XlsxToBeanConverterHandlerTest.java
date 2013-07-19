@@ -9,6 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.aeberhardo.xlsx2beans.converter.XlsxToBeanConverterHandler;
+import ch.aeberhardo.xlsx2beans.converter.beans.InvalidNumberToStringMappingBean;
+import ch.aeberhardo.xlsx2beans.converter.beans.InvalidStringToNumberMappingBean;
+import ch.aeberhardo.xlsx2beans.converter.beans.TestBean1;
 
 public class XlsxToBeanConverterHandlerTest {
 

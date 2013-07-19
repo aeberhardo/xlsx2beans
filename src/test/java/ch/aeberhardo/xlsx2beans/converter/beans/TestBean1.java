@@ -1,4 +1,4 @@
-package ch.aeberhardo.xlsx2beans.converter;
+package ch.aeberhardo.xlsx2beans.converter.beans;
 
 import java.util.Date;
 

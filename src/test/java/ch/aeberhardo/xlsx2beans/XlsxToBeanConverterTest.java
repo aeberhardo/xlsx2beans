@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.aeberhardo.xlsx2beans.XlsxToBeanConverter;
-import ch.aeberhardo.xlsx2beans.converter.DateBean;
-import ch.aeberhardo.xlsx2beans.converter.TestBean1;
+import ch.aeberhardo.xlsx2beans.converter.beans.DateBean;
+import ch.aeberhardo.xlsx2beans.converter.beans.TestBean1;
 
 public class XlsxToBeanConverterTest {
 
