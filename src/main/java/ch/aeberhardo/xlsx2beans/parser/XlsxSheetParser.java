@@ -11,9 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class XlsxSheetParser {
 
 	public void parse(XSSFSheet sheet, XlsxSheetEventHandler handler) {
-
 		parseRows(sheet, handler);
-
 	}
 
 	private void parseRows(XSSFSheet sheet, XlsxSheetEventHandler handler) {
@@ -31,8 +29,8 @@ public class XlsxSheetParser {
 			parseCells(row, headerMap, handler);
 
 			handler.endRow(row.getRowNum());
-
 		}
+
 	}
 
 	private Map<Integer, String> parseHeaderCells(Row row) {
@@ -51,8 +49,7 @@ public class XlsxSheetParser {
 				headerMap.put(colNum, headerCellName);
 
 			} catch (Exception e) {
-				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): "
-						+ e.getMessage(), e);
+				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): " + e.getMessage(), e);
 			}
 		}
 
@@ -95,10 +92,25 @@ public class XlsxSheetParser {
 
 		} else if (cellType == Cell.CELL_TYPE_NUMERIC) {
 			handleNumericCell(cell, rowNum, colIndex, colName, handler);
-
 		}
+
 	}
 
+	private void handleStringCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+		handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());
+	}
+
+	private void handleNumericCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+
+		if (DateUtil.isCellDateFormatted(cell)) {
+			handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
+
+		} else {
+			handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
+		}
+
+	}
+	
 	/**
 	 * Returns the actual type of the cell.
 	 * If the cell contains a formula, the resulting cell type is returned.
@@ -116,21 +128,7 @@ public class XlsxSheetParser {
 		} else {
 			return cellType;
 		}
-	}
 
-	private void handleStringCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
-		handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());
-	}
-
-	private void handleNumericCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
-
-		if (DateUtil.isCellDateFormatted(cell)) {
-			handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
-
-		} else {
-			handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
-
-		}
-	}
+	}	
 
 }
