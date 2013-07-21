@@ -11,9 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class XlsxSheetParser {
 
 	public void parse(XSSFSheet sheet, XlsxSheetEventHandler handler) {
-
 		parseRows(sheet, handler);
-
 	}
 
 	private void parseRows(XSSFSheet sheet, XlsxSheetEventHandler handler) {
@@ -31,8 +29,8 @@ public class XlsxSheetParser {
 			parseCells(row, headerMap, handler);
 
 			handler.endRow(row.getRowNum());
-
 		}
+
 	}
 
 	private Map<Integer, String> parseHeaderCells(Row row) {
@@ -51,8 +49,7 @@ public class XlsxSheetParser {
 				headerMap.put(colNum, headerCellName);
 
 			} catch (Exception e) {
-				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): "
-						+ e.getMessage(), e);
+				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): " + e.getMessage(), e);
 			}
 		}
 
@@ -61,9 +58,11 @@ public class XlsxSheetParser {
 	}
 
 	private void validateHeaderCellNameUnique(Map<Integer, String> headerMap, String name) {
+
 		if (headerMap.containsValue(name)) {
 			throw new IllegalStateException("The column header with name '" + name + "' is not unique!");
 		}
+
 	}
 
 	private void parseCells(Row row, Map<Integer, String> headerMap, XlsxSheetEventHandler handler) {
@@ -77,19 +76,24 @@ public class XlsxSheetParser {
 				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
 			}
 
-			int rowNum = row.getRowNum();
-			int cellType = cell.getCellType();
-
-			if (cellType == Cell.CELL_TYPE_STRING) {
-				handleStringCell(cell, rowNum, colIndex, colName, handler);
-
-			} else if (cellType == Cell.CELL_TYPE_NUMERIC) {
-				handleNumericCell(cell, rowNum, colIndex, colName, handler);
-
-			} else if (cellType == Cell.CELL_TYPE_FORMULA) {
-				handleFormulaCell(cell, rowNum, colIndex, colName, handler);
-			}
+			handleCell(cell, colName, handler);
 		}
+
+	}
+
+	private void handleCell(Cell cell, String colName, XlsxSheetEventHandler handler) {
+
+		int cellType = getActualCellType(cell);
+		int rowNum = cell.getRowIndex();
+		int colIndex = cell.getColumnIndex();
+
+		if (cellType == Cell.CELL_TYPE_STRING) {
+			handleStringCell(cell, rowNum, colIndex, colName, handler);
+
+		} else if (cellType == Cell.CELL_TYPE_NUMERIC) {
+			handleNumericCell(cell, rowNum, colIndex, colName, handler);
+		}
+
 	}
 
 	private void handleStringCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
@@ -97,23 +101,34 @@ public class XlsxSheetParser {
 	}
 
 	private void handleNumericCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+
 		if (DateUtil.isCellDateFormatted(cell)) {
 			handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
+
 		} else {
 			handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
 		}
+
 	}
+	
+	/**
+	 * Returns the actual type of the cell.
+	 * If the cell contains a formula, the resulting cell type is returned.
+	 * 
+	 * @param cell
+	 * @return Type of the cell after evaluating formulas.
+	 */
+	private int getActualCellType(Cell cell) {
 
-	private void handleFormulaCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+		int cellType = cell.getCellType();
 
-		int formulaResultType = cell.getCachedFormulaResultType();
+		if (cellType == Cell.CELL_TYPE_FORMULA) {
+			return cell.getCachedFormulaResultType();
 
-		if (formulaResultType == Cell.CELL_TYPE_STRING) {
-			handleStringCell(cell, rowNum, colIndex, colName, handler);
-
-		} else if (formulaResultType == Cell.CELL_TYPE_NUMERIC) {
-			handleNumericCell(cell, rowNum, colIndex, colName, handler);
+		} else {
+			return cellType;
 		}
-	}
+
+	}	
 
 }
