@@ -74,20 +74,21 @@ public class XlsxSheetParser {
 
 			int colIndex = cell.getColumnIndex();
 			String colName = headerMap.get(colIndex);
-			int rowNum = row.getRowNum();
 
 			if (colName == null || colName.isEmpty()) {
-				throw new XlsxParserException("Error while parsing cell (rowNum=" + rowNum + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
+				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
 			}
 
-			int cellType = cell.getCellType();
-
-			handleCell(cell, cellType, rowNum, colIndex, colName, handler);
+			handleCell(cell, colName, handler);
 		}
 
 	}
 
-	private void handleCell(Cell cell, int cellType, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+	private void handleCell(Cell cell, String colName, XlsxSheetEventHandler handler) {
+
+		int cellType = getActualCellType(cell);
+		int rowNum = cell.getRowIndex();
+		int colIndex = cell.getColumnIndex();
 
 		if (cellType == Cell.CELL_TYPE_STRING) {
 			handleStringCell(cell, rowNum, colIndex, colName, handler);
@@ -95,10 +96,26 @@ public class XlsxSheetParser {
 		} else if (cellType == Cell.CELL_TYPE_NUMERIC) {
 			handleNumericCell(cell, rowNum, colIndex, colName, handler);
 
-		} else if (cellType == Cell.CELL_TYPE_FORMULA) {
-			handleFormulaCell(cell, rowNum, colIndex, colName, handler);
 		}
+	}
 
+	/**
+	 * Returns the actual type of the cell.
+	 * If the cell contains a formula, the resulting cell type is returned.
+	 * 
+	 * @param cell
+	 * @return Type of the cell after evaluating formulas.
+	 */
+	private int getActualCellType(Cell cell) {
+
+		int cellType = cell.getCellType();
+
+		if (cellType == Cell.CELL_TYPE_FORMULA) {
+			return cell.getCachedFormulaResultType();
+
+		} else {
+			return cellType;
+		}
 	}
 
 	private void handleStringCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
@@ -114,14 +131,6 @@ public class XlsxSheetParser {
 			handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
 
 		}
-
-	}
-
-	private void handleFormulaCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
-		
-		int formulaResultCellType = cell.getCachedFormulaResultType();
-		handleCell(cell, formulaResultCellType, rowNum, colIndex, colName, handler);
-
 	}
 
 }
