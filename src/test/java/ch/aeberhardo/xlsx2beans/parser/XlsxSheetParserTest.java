@@ -182,5 +182,31 @@ public class XlsxSheetParserTest {
 		}
 
 	}
+	
+
+	@Test
+	public void test_formattedNumbers() {
+		
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-formatted_numbers.xlsx"))) {
+			
+			XSSFWorkbook wb = new XSSFWorkbook(pkg);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			
+			XlsxSheetParser parser = new XlsxSheetParser();
+			
+			XlsxSheetEventHandler handlerMock = mock(XlsxSheetEventHandler.class);
+			
+			parser.parse(sheet, handlerMock);
+			
+			verify(handlerMock).startRow(1);
+			
+			verify(handlerMock).numberCell(1, 0, "MyFormattedDecimal", new BigDecimal("123456.78900"));
+			verify(handlerMock).numberCell(1, 1, "MyFormattedInteger", new BigDecimal("987654321"));
+			
+		} catch (InvalidFormatException | IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
 
 }

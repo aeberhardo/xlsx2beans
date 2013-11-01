@@ -1,6 +1,8 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -131,14 +133,18 @@ public class XlsxSheetParser {
 
 	private void handleNumberCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
 
-		// System.out.println("format: " +
-		// ((DecimalFormat)m_dataFormatter.createFormat(cell)).toPattern());
-
+		String pattern = ((DecimalFormat) m_dataFormatter.createFormat(cell)).toPattern();
 		String formattedCellValue = m_dataFormatter.formatCellValue(cell, m_formulaEvaluator);
 
-		BigDecimal value = new BigDecimal(formattedCellValue);
+		DecimalFormat decimalFormat = new DecimalFormat(pattern);
+		decimalFormat.setParseBigDecimal(true);
 
-		handler.numberCell(rowNum, colIndex, colName, value);
+		try {
+			Number value = decimalFormat.parse(formattedCellValue);
+			handler.numberCell(rowNum, colIndex, colName, value);
+		} catch (ParseException e) {
+			throw new XlsxParserException("Error while parsing cell (rowNum=" + rowNum + ", colIndex=" + colIndex + ")!", e);
+		}
 	}
 
 	/**
