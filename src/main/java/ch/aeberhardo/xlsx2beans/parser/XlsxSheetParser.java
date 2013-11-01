@@ -1,7 +1,7 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +19,11 @@ public class XlsxSheetParser {
 	private DataFormatter m_dataFormatter;
 
 	public void parse(XSSFSheet sheet, XlsxSheetEventHandler handler) {
-		prepare(sheet);
+		prepareParser(sheet);
 		parseRows(sheet, handler);
 	}
 
-	private void prepare(XSSFSheet sheet) {
+	private void prepareParser(XSSFSheet sheet) {
 		m_formulaEvaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 		m_dataFormatter = new DataFormatter();
 	}
@@ -116,6 +116,15 @@ public class XlsxSheetParser {
 		handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());
 	}
 
+	/**
+	 * Handle a numeric cell. Numeric cells can contain numbers or dates.
+	 * 
+	 * @param cell
+	 * @param rowNum
+	 * @param colIndex
+	 * @param colName
+	 * @param handler
+	 */
 	private void handleNumericCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
 
 		if (DateUtil.isCellDateFormatted(cell)) {
@@ -131,20 +140,62 @@ public class XlsxSheetParser {
 		handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
 	}
 
+	/**
+	 * Parse a cell containing a number. The number in the spreadsheet cell will
+	 * be converted to a BigDecimal to avoid precision loss. It is possible for
+	 * the the number in the spreadsheet to have a custom format, e.g.
+	 * "#,##0.00000".
+	 * 
+	 * @param cell
+	 * @param rowNum
+	 * @param colIndex
+	 * @param colName
+	 * @param handler
+	 */
 	private void handleNumberCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
 
-		String pattern = ((DecimalFormat) m_dataFormatter.createFormat(cell)).toPattern();
-		String formattedCellValue = m_dataFormatter.formatCellValue(cell, m_formulaEvaluator);
-
-		DecimalFormat decimalFormat = new DecimalFormat(pattern);
-		decimalFormat.setParseBigDecimal(true);
+		String pattern = getDecimalFormatPattern(cell);
+		String formattedCellValueAsString = getFormattedCellValueAsString(cell);
 
 		try {
-			Number value = decimalFormat.parse(formattedCellValue);
+
+			Number value = parseNumber(formattedCellValueAsString, pattern);
 			handler.numberCell(rowNum, colIndex, colName, value);
+
 		} catch (ParseException e) {
 			throw new XlsxParserException("Error while parsing cell (rowNum=" + rowNum + ", colIndex=" + colIndex + ")!", e);
 		}
+	}
+
+	private String getDecimalFormatPattern(Cell cell) {
+
+		Format format = m_dataFormatter.createFormat(cell);
+
+		if (!(format instanceof DecimalFormat)) {
+			throw new XlsxParserException("Error while parsing cell (rowNum=" + cell.getRow().getRowNum() + ", colIndex=" + cell.getColumnIndex()
+					+ "): Format not supported! Expected " + DecimalFormat.class.getSimpleName() + " but got " + format.getClass().getSimpleName() + ".");
+		}
+
+		return ((DecimalFormat) format).toPattern();
+	}
+
+	private String getFormattedCellValueAsString(Cell cell) {
+		return m_dataFormatter.formatCellValue(cell, m_formulaEvaluator);
+	}
+
+	/**
+	 * Parse a string and convert to a Number according to a formatting pattern.
+	 * Parsing uses BigDecimals to prevent precision loss.
+	 * 
+	 * @param numberAsString
+	 * @param pattern
+	 * @return
+	 * @throws ParseException
+	 */
+	private Number parseNumber(String numberAsString, String pattern) throws ParseException {
+		DecimalFormat decimalFormat = new DecimalFormat(pattern);
+		decimalFormat.setParseBigDecimal(true);
+		return decimalFormat.parse(numberAsString);
 	}
 
 	/**
