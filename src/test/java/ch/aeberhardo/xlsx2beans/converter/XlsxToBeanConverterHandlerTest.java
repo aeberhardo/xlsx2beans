@@ -42,8 +42,8 @@ public class XlsxToBeanConverterHandlerTest {
 		converterHandler.startRow(1);
 		converterHandler.stringCell(1, 0, "MyString1", "Test string 1");
 		converterHandler.stringCell(1, 1, "MyString2", "Test string 2");
-		converterHandler.doubleCell(1, 2, "MyInteger", 123.0d);
-		converterHandler.doubleCell(1, 3, "MyDouble", 7.89d);
+		converterHandler.numberCell(1, 2, "MyInteger", 123.0d);
+		converterHandler.numberCell(1, 3, "MyDouble", 7.89d);
 		converterHandler.dateCell(1, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("12.01.2013 14:16:23"));
 		converterHandler.endRow(1);
 
@@ -57,8 +57,8 @@ public class XlsxToBeanConverterHandlerTest {
 		converterHandler.startRow(2);
 		converterHandler.stringCell(2, 0, "MyString1", "Test string 3");
 		converterHandler.stringCell(2, 1, "MyString2", "Test string 4");
-		converterHandler.doubleCell(2, 2, "MyInteger", 567.0d);
-		converterHandler.doubleCell(2, 3, "MyDouble", 10.11d);
+		converterHandler.numberCell(2, 2, "MyInteger", 567.0d);
+		converterHandler.numberCell(2, 3, "MyDouble", 10.11d);
 		converterHandler.dateCell(2, 4, "MyDate", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse("20.06.2011 23:50:33"));
 		converterHandler.endRow(2);
 
@@ -99,7 +99,7 @@ public class XlsxToBeanConverterHandlerTest {
 		
 		try {
 			
-			converterHandler.doubleCell(1, 0, "MyInteger", 1d);
+			converterHandler.numberCell(1, 0, "MyInteger", 1d);
 			
 			fail("Expected exception was not thrown!");
 			

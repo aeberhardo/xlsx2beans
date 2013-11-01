@@ -1,10 +1,13 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -49,7 +52,8 @@ public class XlsxSheetParser {
 				headerMap.put(colNum, headerCellName);
 
 			} catch (Exception e) {
-				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): " + e.getMessage(), e);
+				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): "
+						+ e.getMessage(), e);
 			}
 		}
 
@@ -73,7 +77,8 @@ public class XlsxSheetParser {
 			String colName = headerMap.get(colIndex);
 
 			if (colName == null || colName.isEmpty()) {
-				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
+				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex()
+						+ "): No header name defined!");
 			}
 
 			handleCell(cell, colName, handler);
@@ -103,17 +108,36 @@ public class XlsxSheetParser {
 	private void handleNumericCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
 
 		if (DateUtil.isCellDateFormatted(cell)) {
-			handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
+			handleDateCell(cell, rowNum, colIndex, colName, handler);
 
 		} else {
-			handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
+			handleNumberCell(cell, rowNum, colIndex, colName, handler);
 		}
 
 	}
-	
+
+	private void handleDateCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+		handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
+	}
+
+	private void handleNumberCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+
+		// TODO: Nur einmal pro Parse-Durchlauf.
+		FormulaEvaluator evaluator = cell.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+		
+		// TODO: "static"
+        DataFormatter formatter = new DataFormatter();
+
+        String formatCellValue = formatter.formatCellValue(cell, evaluator);
+        
+        BigDecimal value = new BigDecimal(formatCellValue);
+        
+		handler.numberCell(rowNum, colIndex, colName, value);
+	}
+
 	/**
-	 * Returns the actual type of the cell.
-	 * If the cell contains a formula, the resulting cell type is returned.
+	 * Returns the actual type of the cell. If the cell contains a formula, the
+	 * resulting cell type is returned.
 	 * 
 	 * @param cell
 	 * @return Type of the cell after evaluating formulas.
@@ -129,6 +153,6 @@ public class XlsxSheetParser {
 			return cellType;
 		}
 
-	}	
+	}
 
 }
