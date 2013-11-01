@@ -1,7 +1,6 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +13,17 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class XlsxSheetParser {
 
+	private FormulaEvaluator m_formulaEvaluator;
+	private DataFormatter m_dataFormatter;
+
 	public void parse(XSSFSheet sheet, XlsxSheetEventHandler handler) {
+		prepare(sheet);
 		parseRows(sheet, handler);
+	}
+
+	private void prepare(XSSFSheet sheet) {
+		m_formulaEvaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
+		m_dataFormatter = new DataFormatter();
 	}
 
 	private void parseRows(XSSFSheet sheet, XlsxSheetEventHandler handler) {
@@ -123,18 +131,13 @@ public class XlsxSheetParser {
 
 	private void handleNumberCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
 
-		// TODO: Nur einmal pro Parse-Durchlauf.
-		FormulaEvaluator evaluator = cell.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
-		
-		// TODO: "static"
-        DataFormatter formatter = new DataFormatter();
-        
-        System.out.println("format: " + ((DecimalFormat)formatter.createFormat(cell)).toPattern());
+		// System.out.println("format: " +
+		// ((DecimalFormat)m_dataFormatter.createFormat(cell)).toPattern());
 
-        String formatCellValue = formatter.formatCellValue(cell, evaluator);
-        
-        BigDecimal value = new BigDecimal(formatCellValue);
-        
+		String formattedCellValue = m_dataFormatter.formatCellValue(cell, m_formulaEvaluator);
+
+		BigDecimal value = new BigDecimal(formattedCellValue);
+
 		handler.numberCell(rowNum, colIndex, colName, value);
 	}
 
