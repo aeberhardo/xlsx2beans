@@ -1,6 +1,7 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,6 +128,8 @@ public class XlsxSheetParser {
 		
 		// TODO: "static"
         DataFormatter formatter = new DataFormatter();
+        
+        System.out.println("format: " + ((DecimalFormat)formatter.createFormat(cell)).toPattern());
 
         String formatCellValue = formatter.formatCellValue(cell, evaluator);
         
