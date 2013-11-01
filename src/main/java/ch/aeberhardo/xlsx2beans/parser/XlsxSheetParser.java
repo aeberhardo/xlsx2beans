@@ -1,17 +1,31 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class XlsxSheetParser {
 
+	private FormulaEvaluator m_formulaEvaluator;
+	private DataFormatter m_dataFormatter;
+
 	public void parse(XSSFSheet sheet, XlsxSheetEventHandler handler) {
+		prepareParser(sheet);
 		parseRows(sheet, handler);
+	}
+
+	private void prepareParser(XSSFSheet sheet) {
+		m_formulaEvaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
+		m_dataFormatter = new DataFormatter();
 	}
 
 	private void parseRows(XSSFSheet sheet, XlsxSheetEventHandler handler) {
@@ -49,7 +63,8 @@ public class XlsxSheetParser {
 				headerMap.put(colNum, headerCellName);
 
 			} catch (Exception e) {
-				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): " + e.getMessage(), e);
+				throw new XlsxParserException("Error while parsing header (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): "
+						+ e.getMessage(), e);
 			}
 		}
 
@@ -73,7 +88,8 @@ public class XlsxSheetParser {
 			String colName = headerMap.get(colIndex);
 
 			if (colName == null || colName.isEmpty()) {
-				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex() + "): No header name defined!");
+				throw new XlsxParserException("Error while parsing cell (rowNum=" + row.getRowNum() + ", colIndex=" + cell.getColumnIndex()
+						+ "): No header name defined!");
 			}
 
 			handleCell(cell, colName, handler);
@@ -100,20 +116,91 @@ public class XlsxSheetParser {
 		handler.stringCell(rowNum, colIndex, colName, cell.getStringCellValue());
 	}
 
+	/**
+	 * Handle a numeric cell. Numeric cells can contain numbers or dates.
+	 * 
+	 * @param cell
+	 * @param rowNum
+	 * @param colIndex
+	 * @param colName
+	 * @param handler
+	 */
 	private void handleNumericCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
 
 		if (DateUtil.isCellDateFormatted(cell)) {
-			handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
+			handleDateCell(cell, rowNum, colIndex, colName, handler);
 
 		} else {
-			handler.doubleCell(rowNum, colIndex, colName, cell.getNumericCellValue());
+			handleNumberCell(cell, rowNum, colIndex, colName, handler);
 		}
 
 	}
-	
+
+	private void handleDateCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+		handler.dateCell(rowNum, colIndex, colName, cell.getDateCellValue());
+	}
+
 	/**
-	 * Returns the actual type of the cell.
-	 * If the cell contains a formula, the resulting cell type is returned.
+	 * Parse a cell containing a number. The number in the spreadsheet cell will
+	 * be converted to a BigDecimal to avoid precision loss. It is possible for
+	 * the the number in the spreadsheet to have a custom format, e.g.
+	 * "#,##0.00000".
+	 * 
+	 * @param cell
+	 * @param rowNum
+	 * @param colIndex
+	 * @param colName
+	 * @param handler
+	 */
+	private void handleNumberCell(Cell cell, int rowNum, int colIndex, String colName, XlsxSheetEventHandler handler) {
+
+		String pattern = getDecimalFormatPattern(cell);
+		String formattedCellValueAsString = getFormattedCellValueAsString(cell);
+
+		try {
+
+			Number value = parseNumber(formattedCellValueAsString, pattern);
+			handler.numberCell(rowNum, colIndex, colName, value);
+
+		} catch (ParseException e) {
+			throw new XlsxParserException("Error while parsing cell (rowNum=" + rowNum + ", colIndex=" + colIndex + ")!", e);
+		}
+	}
+
+	private String getDecimalFormatPattern(Cell cell) {
+
+		Format format = m_dataFormatter.createFormat(cell);
+
+		if (!(format instanceof DecimalFormat)) {
+			throw new XlsxParserException("Error while parsing cell (rowNum=" + cell.getRow().getRowNum() + ", colIndex=" + cell.getColumnIndex()
+					+ "): Format not supported! Expected " + DecimalFormat.class.getSimpleName() + " but got " + format.getClass().getSimpleName() + ".");
+		}
+
+		return ((DecimalFormat) format).toPattern();
+	}
+
+	private String getFormattedCellValueAsString(Cell cell) {
+		return m_dataFormatter.formatCellValue(cell, m_formulaEvaluator);
+	}
+
+	/**
+	 * Parse a string and convert to a Number according to a formatting pattern.
+	 * Parsing uses BigDecimals to prevent precision loss.
+	 * 
+	 * @param numberAsString
+	 * @param pattern
+	 * @return
+	 * @throws ParseException
+	 */
+	private Number parseNumber(String numberAsString, String pattern) throws ParseException {
+		DecimalFormat decimalFormat = new DecimalFormat(pattern);
+		decimalFormat.setParseBigDecimal(true);
+		return decimalFormat.parse(numberAsString);
+	}
+
+	/**
+	 * Returns the actual type of the cell. If the cell contains a formula, the
+	 * resulting cell type is returned.
 	 * 
 	 * @param cell
 	 * @return Type of the cell after evaluating formulas.
@@ -129,6 +216,6 @@ public class XlsxSheetParser {
 			return cellType;
 		}
 
-	}	
+	}
 
 }

@@ -41,7 +41,7 @@ public class XlsxToBeanConverterHandler<T> implements XlsxSheetEventHandler {
 	}
 
 	@Override
-	public void doubleCell(int rowNum, int colIndex, String colName, Double cellValue) {
+	public void numberCell(int rowNum, int colIndex, String colName, Number cellValue) {
 		T currentBean = getCurrentBean();
 		try {
 			m_mapper.setNumber(currentBean, colName, cellValue);

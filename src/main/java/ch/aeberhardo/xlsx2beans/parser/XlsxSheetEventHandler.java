@@ -10,7 +10,7 @@ public interface XlsxSheetEventHandler {
 
 	void stringCell(int rowNum, int colIndex, String colName, String cellValue);
 
-	void doubleCell(int rowNum, int colIndex, String colName, Double cellValue);
+	void numberCell(int rowNum, int colIndex, String colName, Number cellValue);
 
 	void dateCell(int rowNum, int colIndex, String colName, Date cellValue);
 

@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.aeberhardo.xlsx2beans.XlsxToBeanConverter;
 import ch.aeberhardo.xlsx2beans.converter.beans.DateBean;
+import ch.aeberhardo.xlsx2beans.converter.beans.DoublePrecisionBean;
 import ch.aeberhardo.xlsx2beans.converter.beans.FormulaBean;
 import ch.aeberhardo.xlsx2beans.converter.beans.TestBean1;
 
@@ -96,6 +96,21 @@ public class XlsxToBeanConverterTest {
 
 		assertEquals(Integer.valueOf(2), beans.get(1).getMyFormulaInteger());
 		assertEquals("15.12.2001 05:06:00", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(beans.get(1).getMyFormulaTimestamp()));
+	}
+
+	@Test
+	public void test_doublePrecision() {
+
+		XlsxToBeanConverter converter = new XlsxToBeanConverter();
+
+		List<DoublePrecisionBean> beans = converter.convert(getClass().getResourceAsStream("/test-double_precision.xlsx"), 0, DoublePrecisionBean.class);
+
+		assertEquals(1, beans.size());
+
+		assertEquals(Double.valueOf(8.2), beans.get(0).getMyDecimal());
+		assertEquals(Integer.valueOf(820), beans.get(0).getMyInteger());
+		assertEquals(Integer.valueOf(820), beans.get(0).getMyCalculatedInteger());
+
 	}
 
 }
