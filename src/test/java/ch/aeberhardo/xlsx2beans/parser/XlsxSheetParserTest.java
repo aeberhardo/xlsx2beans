@@ -60,7 +60,7 @@ public class XlsxSheetParserTest {
 	@Test
 	public void test_emptyRow() {
 
-		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-valid_with_empty_row.xlsx"))) {
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-valid-with_empty_row.xlsx"))) {
 
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
 			XSSFSheet sheet = wb.getSheetAt(0);
@@ -112,7 +112,7 @@ public class XlsxSheetParserTest {
 	@Test
 	public void test_nonUniqueHeader() {
 
-		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-non_unique_header.xlsx"))) {
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-invalid-non_unique_header.xlsx"))) {
 
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
 			XSSFSheet sheet = wb.getSheetAt(0);
@@ -136,7 +136,7 @@ public class XlsxSheetParserTest {
 	@Test
 	public void test_undefinedHeader() {
 
-		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-header_not_definied.xlsx"))) {
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-invalid-header_not_definied.xlsx"))) {
 
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
 			XSSFSheet sheet = wb.getSheetAt(0);
@@ -160,7 +160,7 @@ public class XlsxSheetParserTest {
 	@Test
 	public void test_doublePrecision() {
 
-		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-double_precision.xlsx"))) {
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-valid-double_precision.xlsx"))) {
 
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
 			XSSFSheet sheet = wb.getSheetAt(0);
@@ -187,7 +187,7 @@ public class XlsxSheetParserTest {
 	@Test
 	public void test_formattedNumbers() {
 		
-		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-formatted_numbers.xlsx"))) {
+		try (OPCPackage pkg = OPCPackage.open(getClass().getResourceAsStream("/test-valid-formatted_numbers.xlsx"))) {
 			
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
 			XSSFSheet sheet = wb.getSheetAt(0);

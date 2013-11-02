@@ -47,7 +47,7 @@ public class XlsxToBeanConverterTest {
 
 		XlsxToBeanConverter converter = new XlsxToBeanConverter();
 
-		List<TestBean1> beans = converter.convert(getClass().getResourceAsStream("/test-valid_empty_cells.xlsx"), 0, TestBean1.class);
+		List<TestBean1> beans = converter.convert(getClass().getResourceAsStream("/test-valid-empty_cells.xlsx"), 0, TestBean1.class);
 
 		assertEquals(2, beans.size());
 
@@ -103,7 +103,7 @@ public class XlsxToBeanConverterTest {
 
 		XlsxToBeanConverter converter = new XlsxToBeanConverter();
 
-		List<DoublePrecisionBean> beans = converter.convert(getClass().getResourceAsStream("/test-double_precision.xlsx"), 0, DoublePrecisionBean.class);
+		List<DoublePrecisionBean> beans = converter.convert(getClass().getResourceAsStream("/test-valid-double_precision.xlsx"), 0, DoublePrecisionBean.class);
 
 		assertEquals(1, beans.size());
 
