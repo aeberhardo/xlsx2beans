@@ -1,5 +1,6 @@
 package ch.aeberhardo.xlsx2beans.converter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -41,7 +42,7 @@ public class XlsxToBeanConverterHandler<T> implements XlsxSheetEventHandler {
 	}
 
 	@Override
-	public void numberCell(int rowNum, int colIndex, String colName, Number cellValue) {
+	public void numberCell(int rowNum, int colIndex, String colName, BigDecimal cellValue) {
 		T currentBean = getCurrentBean();
 		try {
 			m_mapper.setNumber(currentBean, colName, cellValue);
