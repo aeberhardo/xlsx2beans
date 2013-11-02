@@ -1,5 +1,6 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.ParseException;
@@ -159,7 +160,7 @@ public class XlsxSheetParser {
 
 		try {
 
-			Number value = parseNumber(formattedCellValueAsString, pattern);
+			BigDecimal value = parseBigDecimal(formattedCellValueAsString, pattern);
 			handler.numberCell(rowNum, colIndex, colName, value);
 
 		} catch (ParseException e) {
@@ -184,7 +185,7 @@ public class XlsxSheetParser {
 	}
 
 	/**
-	 * Parse a string and convert to a Number according to a formatting pattern.
+	 * Parse a string and convert to a BigDecimal according to a formatting pattern.
 	 * Parsing uses BigDecimals to prevent precision loss.
 	 * 
 	 * @param numberAsString
@@ -192,10 +193,10 @@ public class XlsxSheetParser {
 	 * @return
 	 * @throws ParseException
 	 */
-	private Number parseNumber(String numberAsString, String pattern) throws ParseException {
+	private BigDecimal parseBigDecimal(String numberAsString, String pattern) throws ParseException {
 		DecimalFormat decimalFormat = new DecimalFormat(pattern);
 		decimalFormat.setParseBigDecimal(true);
-		return decimalFormat.parse(numberAsString);
+		return (BigDecimal) decimalFormat.parse(numberAsString);
 	}
 
 	/**

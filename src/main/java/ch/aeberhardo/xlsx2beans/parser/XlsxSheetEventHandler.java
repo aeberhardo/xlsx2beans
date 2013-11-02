@@ -1,5 +1,6 @@
 package ch.aeberhardo.xlsx2beans.parser;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public interface XlsxSheetEventHandler {
@@ -10,7 +11,7 @@ public interface XlsxSheetEventHandler {
 
 	void stringCell(int rowNum, int colIndex, String colName, String cellValue);
 
-	void numberCell(int rowNum, int colIndex, String colName, Number cellValue);
+	void numberCell(int rowNum, int colIndex, String colName, BigDecimal cellValue);
 
 	void dateCell(int rowNum, int colIndex, String colName, Date cellValue);
 
