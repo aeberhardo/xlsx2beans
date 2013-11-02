@@ -8,8 +8,6 @@ import java.text.SimpleDateFormat;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.aeberhardo.xlsx2beans.converter.XlsxToBeanConverterHandler;
-import ch.aeberhardo.xlsx2beans.converter.beans.InvalidNumberToStringMappingBean;
 import ch.aeberhardo.xlsx2beans.converter.beans.InvalidStringToNumberMappingBean;
 import ch.aeberhardo.xlsx2beans.converter.beans.TestBean1;
 
@@ -88,25 +86,6 @@ public class XlsxToBeanConverterHandlerTest {
 					"Error while mapping cell (rowNum=1, colIndex=0, colName=MyString1, cellValue=Test string 1): argument type mismatch"));
 		}
 
-	}
-
-	@Test
-	public void test_invalidNumberToStringMapping() {
-		
-		XlsxToBeanConverterHandler<InvalidNumberToStringMappingBean> converterHandler = new XlsxToBeanConverterHandler<>(InvalidNumberToStringMappingBean.class);
-		
-		converterHandler.startRow(1);
-		
-		try {
-			
-			converterHandler.numberCell(1, 0, "MyInteger", 1d);
-			
-			fail("Expected exception was not thrown!");
-			
-		} catch (XlsxBeanConverterException e) {
-			assertEquals("Error while mapping cell (rowNum=1, colIndex=0, colName=MyInteger, cellValue=1.0): argument type mismatch! Mapping target expected String but got Number.", e.getMessage());
-		}
-		
 	}
 
 }

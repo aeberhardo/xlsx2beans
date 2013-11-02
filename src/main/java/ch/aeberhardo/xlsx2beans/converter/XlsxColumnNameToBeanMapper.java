@@ -45,6 +45,8 @@ public class XlsxColumnNameToBeanMapper {
 				targetValue = value.byteValue();
 			} else if (parameterType == Long.class) {
 				targetValue = value.longValue();
+			} else if (parameterType == String.class) {
+				targetValue = value.toString();
 			} else {
 				throw new XlsxColumnNameToBeanMapperException("argument type mismatch! Mapping target expected " + parameterType.getSimpleName()
 						+ " but got Number.");
