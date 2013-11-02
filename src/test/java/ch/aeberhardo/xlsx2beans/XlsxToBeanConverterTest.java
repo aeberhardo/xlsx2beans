@@ -12,6 +12,7 @@ import org.junit.Test;
 import ch.aeberhardo.xlsx2beans.converter.beans.DateBean;
 import ch.aeberhardo.xlsx2beans.converter.beans.DoublePrecisionBean;
 import ch.aeberhardo.xlsx2beans.converter.beans.FormulaBean;
+import ch.aeberhardo.xlsx2beans.converter.beans.NumberAsTextBean;
 import ch.aeberhardo.xlsx2beans.converter.beans.TestBean1;
 
 public class XlsxToBeanConverterTest {
@@ -47,7 +48,7 @@ public class XlsxToBeanConverterTest {
 
 		XlsxToBeanConverter converter = new XlsxToBeanConverter();
 
-		List<TestBean1> beans = converter.convert(getClass().getResourceAsStream("/test-valid_empty_cells.xlsx"), 0, TestBean1.class);
+		List<TestBean1> beans = converter.convert(getClass().getResourceAsStream("/test-valid-empty_cells.xlsx"), 0, TestBean1.class);
 
 		assertEquals(2, beans.size());
 
@@ -103,13 +104,29 @@ public class XlsxToBeanConverterTest {
 
 		XlsxToBeanConverter converter = new XlsxToBeanConverter();
 
-		List<DoublePrecisionBean> beans = converter.convert(getClass().getResourceAsStream("/test-double_precision.xlsx"), 0, DoublePrecisionBean.class);
+		List<DoublePrecisionBean> beans = converter.convert(getClass().getResourceAsStream("/test-valid-double_precision.xlsx"), 0, DoublePrecisionBean.class);
 
 		assertEquals(1, beans.size());
 
 		assertEquals(Double.valueOf(8.2), beans.get(0).getMyDecimal());
 		assertEquals(Integer.valueOf(820), beans.get(0).getMyInteger());
 		assertEquals(Integer.valueOf(820), beans.get(0).getMyCalculatedInteger());
+
+	}
+
+	@Test
+	public void test_numberAsText() {
+
+		XlsxToBeanConverter converter = new XlsxToBeanConverter();
+
+		List<NumberAsTextBean> beans = converter.convert(getClass().getResourceAsStream("/test-valid-number_as_text.xlsx"), 0, NumberAsTextBean.class);
+
+		assertEquals(4, beans.size());
+
+		assertEquals("Foo", beans.get(0).getMyString());
+		assertEquals("1234", beans.get(1).getMyString());
+		assertEquals("4567", beans.get(2).getMyString());
+		assertEquals("Bar", beans.get(3).getMyString());
 
 	}
 

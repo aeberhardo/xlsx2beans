@@ -2,6 +2,7 @@ package ch.aeberhardo.xlsx2beans.converter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,7 @@ public class XlsxColumnNameToBeanMapper {
 		setObject(targetObject, mappedColumnName, value);
 	}
 
-	public void setNumber(Object targetObject, String mappedColumnName, Number value) {
+	public void setNumber(Object targetObject, String mappedColumnName, BigDecimal value) {
 
 		if (value == null) {
 			return;
@@ -34,17 +35,21 @@ public class XlsxColumnNameToBeanMapper {
 			Object targetValue = null;
 
 			if (parameterType == Integer.class) {
-				targetValue = value.intValue();
+				targetValue = value.intValueExact();
 			} else if (parameterType == Double.class) {
 				targetValue = value.doubleValue();
 			} else if (parameterType == Float.class) {
 				targetValue = value.floatValue();
 			} else if (parameterType == Short.class) {
-				targetValue = value.shortValue();
+				targetValue = value.shortValueExact();
 			} else if (parameterType == Byte.class) {
-				targetValue = value.byteValue();
+				targetValue = value.byteValueExact();
 			} else if (parameterType == Long.class) {
-				targetValue = value.longValue();
+				targetValue = value.longValueExact();
+			} else if (parameterType == BigDecimal.class) {
+				targetValue = value;
+			} else if (parameterType == String.class) {
+				targetValue = value.toString();
 			} else {
 				throw new XlsxColumnNameToBeanMapperException("argument type mismatch! Mapping target expected " + parameterType.getSimpleName()
 						+ " but got Number.");
