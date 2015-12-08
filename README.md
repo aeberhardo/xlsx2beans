@@ -1,7 +1,7 @@
-xlsx2beans
+xlsx2beans (azuxx fork)
 ==========
 
-Convert XLSX spreadsheets to Java beans.
+Convert XLSX and XLS spreadsheets to Java beans.
 
 Requirements
 ------------
@@ -12,4 +12,8 @@ Features
 --------
 * Annotation `@XlsxColumnName` for mapping spreadsheet columns to Java bean properties
 * Supports Strings, Numerics (Numbers and Dates) and Formulas
- 
+
+What's new
+--------
+* Supported conversion of XLS files as well
+* Supported annotation `@XlsxColumnName` on bean super class if exists
