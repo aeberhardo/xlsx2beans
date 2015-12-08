@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import ch.aeberhardo.xlsx2beans.converter.XlsxBeanConverterException;
 import ch.aeberhardo.xlsx2beans.converter.XlsxToBeanConverterHandler;
 import ch.aeberhardo.xlsx2beans.parser.XlsxSheetParser;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  * This class converts a XLSX spread sheet to a list of Java beans.
@@ -36,12 +38,27 @@ public class XlsxToBeanConverter {
 
 		try (OPCPackage pkg = OPCPackage.open(xlsxWorkbookInputStream)) {
 
-			XSSFWorkbook wb = new XSSFWorkbook(pkg);
-			XSSFSheet sheet = wb.getSheetAt(sheetIndex);
+			Workbook wb = new XSSFWorkbook(pkg);
+			Sheet sheet = wb.getSheetAt(sheetIndex);
 
 			return convert(sheet, beanType);
 
 		} catch (InvalidFormatException | IOException e) {
+			throw new XlsxBeanConverterException(e);
+		}
+	}
+        
+        
+        /* supporting xls conversion */ 
+        public <T> List<T> convertXls(InputStream xlsWorkbookInputStream, int sheetIndex, Class<T> beanType) {
+
+		try {
+			Workbook wb = new HSSFWorkbook(xlsWorkbookInputStream);
+			Sheet sheet = wb.getSheetAt(sheetIndex);
+
+			return convert(sheet, beanType);
+
+		} catch (IOException e) {
 			throw new XlsxBeanConverterException(e);
 		}
 	}
@@ -55,7 +72,7 @@ public class XlsxToBeanConverter {
 	 * @param beanType The type of class the spread sheet rows get converted to.
 	 * @return A list of newly created beans. Every spread sheet row gets converted to a single bean instance.
 	 */
-	public <T> List<T> convert(XSSFSheet sheet, Class<T> beanType) {
+	public <T> List<T> convert(Sheet sheet, Class<T> beanType) {
 
 		XlsxToBeanConverterHandler<T> handler = new XlsxToBeanConverterHandler<T>(beanType);
 		XlsxSheetParser parser = new XlsxSheetParser();
