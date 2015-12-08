@@ -144,7 +144,7 @@ public class XlsxSheetParser {
     /**
      * Parse a cell containing a number. The number in the spreadsheet cell will
      * be converted to a BigDecimal to avoid precision loss. It is possible for
-     * the the number in the spreadsheet to have a custom format, e.g.
+     * the number in the spreadsheet to have a custom format, e.g.
      * "#,##0.00000".
      *
      * @param cell
@@ -161,7 +161,7 @@ public class XlsxSheetParser {
 
         try {
             if (pattern == null) {
-                //fallback where as no pattern has been defined on cell. FIXME?
+                // Fallback when no pattern has been defined on cell. FIXME? [azuxx]
                 if (isNumeric(formattedCellValueAsString)) {
                     handler.numberCell(rowNum, colIndex, colName, BigDecimal.valueOf(Double.valueOf(formattedCellValueAsString)));
                 } else {
